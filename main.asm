@@ -14,3 +14,16 @@ WaitVBlank:
     ; Turn LCD off
     ld a, 0
     ld [rLCDC], a
+
+; @para de: Source
+; @para hl: Destination
+; @para bc: Lenght
+MemCopy:
+    ld a, [de]
+    ld [hli], a
+    inc de
+    dec bc
+    ld a, b
+    or a, c
+    jp nz, MemCopy
+    ret

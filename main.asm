@@ -44,26 +44,26 @@ CleanOam:
 
     ; Initalize paddle01 in OAM
     ld hl, STARTOF(OAM)
-    ld a, 72 + 16
+    ld a, 72 + 16 - 8
     ld [hli], a
-    ld a, 155 + 8
+    ld a, 155 + 8 - 4
     ld [hli], a
     ld a, 0
     ld [hli], a
     ld [hli], a
     ; Initalize paddle02 in OAM
-    ld a, 72 + 16 + 8
+    ld a, 72 + 16
     ld [hli], a
-    ld a, 155 + 8
+    ld a, 155 + 8 - 4
     ld [hli], a
     ld a, 1
     ld [hli], a
     ld a, 0
     ld [hli], a
     ; Initalize paddle03 in OAM
-    ld a, 72 + 16 + 16
+    ld a, 72 + 16 + 8
     ld [hli], a
-    ld a, 155 + 8
+    ld a, 155 + 8 - 4
     ld [hli], a
     ld a, 2
     ld [hli], a

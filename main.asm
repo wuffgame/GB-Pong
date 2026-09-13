@@ -30,6 +30,27 @@ CleanOam:
     jp nz, CleanOam
 
 
+    ; Initalize first paddle in OAM
+    ld hl, STARTOF(OAM)
+    ld a, 72 + 16
+    ld [hli], a
+    ld a, 159 + 8
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+    ld [hli], a
+
+    ; Initalize display registers
+    ld a, %11100100
+    ld [rOBP0], a
+
+    ; Turn on LCD
+    ld a, LCDCF_ON | LCDC_OBJ_ON
+    ld [rLCDC], a
+
+Done:
+    jp Done
+
 Paddle:
     dw `13100000
     dw `32300000

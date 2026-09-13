@@ -15,10 +15,19 @@ WaitVBlank:
     ld a, 0
     ld [rLCDC], a
 
+    ; Copy Paddle tile
     ld de, Paddle
     ld hl, $8000
     ld bc, PaddleEnd - Paddle
     call MemCopy
+
+    ld a, 0
+    ld b, 160
+    ld hl, STARTOF(OAM)
+CleanOam:
+    ld [hli], a
+    dec b
+    jp nz, CleanOam
 
 
 Paddle:

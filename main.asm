@@ -87,6 +87,33 @@ CleanOam:
     ld [hli], a
     ld a, 0
     ld [hli], a
+    ; Initalize paddle11 in OAM
+    ld a, 72 + 16 - 8
+    ld [hli], a
+    ld a, 0 + 8 + 4
+    ld [hli], a
+    ld a, 3
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+    ; Initalize paddle12 in OAM
+    ld a, 72 + 16
+    ld [hli], a
+    ld a, 0 + 8 + 4
+    ld [hli], a
+    ld a, 4
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+    ; Initalize paddle13 in OAM
+    ld a, 72 + 16 + 8
+    ld [hli], a
+    ld a, 0 + 8 + 4
+    ld [hli], a
+    ld a, 5
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
 
 
     ; Initalize display registers

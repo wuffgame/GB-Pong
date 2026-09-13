@@ -34,7 +34,7 @@ CleanOam:
     ld hl, STARTOF(OAM)
     ld a, 72 + 16
     ld [hli], a
-    ld a, 159 + 8
+    ld a, 155 + 8
     ld [hli], a
     ld a, 0
     ld [hli], a

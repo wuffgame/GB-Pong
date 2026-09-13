@@ -45,7 +45,7 @@ CleanOam:
     ld [rOBP0], a
 
     ; Turn on LCD
-    ld a, LCDCF_ON | LCDC_OBJ_ON
+    ld a, LCDC_ON | LCDC_OBJ_ON
     ld [rLCDC], a
 
 Done:

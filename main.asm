@@ -120,6 +120,15 @@ CleanOam:
     ld [hli], a
     ld a, 0
     ld [hli], a
+    ; Initalize ball in OAM
+    ld a, 72 + 16
+    ld [hli], a
+    ld a, 80 + 8 - 4
+    ld [hli], a
+    ld a, 6
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
 
 
     ; Initalize display registers

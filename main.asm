@@ -33,6 +33,24 @@ WaitVBlank:
     ld bc, PaddleEnd03 - Paddle03
     call MemCopy
 
+    ; Copy Paddle11 tile
+    ld de, Paddle11
+    ld hl, $8030
+    ld bc, PaddleEnd11 - Paddle11
+    call MemCopy
+
+    ; Copy Paddle12 tile
+    ld de, Paddle12
+    ld hl, $8040
+    ld bc, PaddleEnd12 - Paddle12
+    call MemCopy
+
+    ; Copy Paddle13
+    ld de, Paddle13
+    ld hl, $8050
+    ld bc, PaddleEnd13 - Paddle13
+    call MemCopy
+
     ld a, 0
     ld b, 160
     ld hl, STARTOF(OAM)
@@ -114,6 +132,39 @@ Paddle03:
     dw `32223000
     dw `13331000
 PaddleEnd03:
+
+Paddle11:
+    dw `00013331
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+PaddleEnd11:
+
+Paddle12:
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+PaddleEnd12:
+
+Paddle13:
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00032223
+    dw `00013331
+PaddleEnd13:
 
 
 ; @para de: Source

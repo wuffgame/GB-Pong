@@ -51,6 +51,12 @@ WaitVBlank:
     ld bc, PaddleEnd13 - Paddle13
     call MemCopy
 
+    ; Copy Ball
+    ld de, Ball
+    ld hl, $8060
+    ld bc, BallEnd - Ball
+    call MemCopy
+
     ld a, 0
     ld b, 160
     ld hl, STARTOF(OAM)
@@ -192,6 +198,17 @@ Paddle13:
     dw `00032223
     dw `00013331
 PaddleEnd13:
+
+Ball:
+    dw `00033000
+    dw `00311300
+    dw `03111130
+    dw `31111113
+    dw `31111113
+    dw `03111130
+    dw `00311300
+    dw `00033000
+BallEnd:
 
 
 ; @para de: Source

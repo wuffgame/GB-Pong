@@ -15,10 +15,22 @@ WaitVBlank:
     ld a, 0
     ld [rLCDC], a
 
-    ; Copy Paddle tile
-    ld de, Paddle
+    ; Copy Paddle01 tile
+    ld de, Paddle01
     ld hl, $8000
-    ld bc, PaddleEnd - Paddle
+    ld bc, PaddleEnd01 - Paddle01
+    call MemCopy
+
+    ; Copy Paddle02 tile
+    ld de, Paddle02
+    ld hl, $8010
+    ld bc, PaddleEnd02 - Paddle02
+    call MemCopy
+
+    ; Copy Paddle03 tile
+    ld de, Paddle03
+    ld hl, $8020
+    ld bc, PaddleEnd03 - Paddle03
     call MemCopy
 
     ld a, 0
@@ -30,7 +42,7 @@ CleanOam:
     jp nz, CleanOam
 
 
-    ; Initalize first paddle in OAM
+    ; Initalize paddle01 in OAM
     ld hl, STARTOF(OAM)
     ld a, 72 + 16
     ld [hli], a
@@ -39,6 +51,25 @@ CleanOam:
     ld a, 0
     ld [hli], a
     ld [hli], a
+    ; Initalize paddle02 in OAM
+    ld a, 72 + 16 + 8
+    ld [hli], a
+    ld a, 155 + 8
+    ld [hli], a
+    ld a, 1
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+    ; Initalize paddle03 in OAM
+    ld a, 72 + 16 + 16
+    ld [hli], a
+    ld a, 155 + 8
+    ld [hli], a
+    ld a, 2
+    ld [hli], a
+    ld a, 0
+    ld [hli], a
+
 
     ; Initalize display registers
     ld a, %11100100
@@ -51,16 +82,38 @@ CleanOam:
 Done:
     jp Done
 
-Paddle:
-    dw `13100000
-    dw `32300000
-    dw `32300000
-    dw `32300000
-    dw `32300000
-    dw `32300000
-    dw `32300000
-    dw `13100000
-PaddleEnd:
+Paddle01:
+    dw `13331000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+PaddleEnd01:
+
+Paddle02:
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+PaddleEnd02:
+
+Paddle03:
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `32223000
+    dw `13331000
+PaddleEnd03:
 
 
 ; @para de: Source

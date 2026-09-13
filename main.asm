@@ -15,6 +15,24 @@ WaitVBlank:
     ld a, 0
     ld [rLCDC], a
 
+    ld de, Paddle
+    ld hl, $8000
+    ld bc, PaddleEnd - Paddle
+    call MemCopy
+
+
+Paddle:
+    dw `13100000
+    dw `32300000
+    dw `32300000
+    dw `32300000
+    dw `32300000
+    dw `32300000
+    dw `32300000
+    dw `13100000
+PaddleEnd:
+
+
 ; @para de: Source
 ; @para hl: Destination
 ; @para bc: Lenght

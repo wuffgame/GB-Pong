@@ -15,6 +15,12 @@ WaitVBlank:
     ld a, 0
     ld [rLCDC], a
 
+    ; Copy tile
+    ld de, Tiles
+    ld hl, $9000
+    ld bc TilesEnd - Tiles
+    call MemCopy
+
     ; Copy Paddle01 tile
     ld de, Paddle01
     ld hl, $8000
@@ -141,6 +147,17 @@ CleanOam:
 
 Done:
     jp Done
+
+Tiles:
+    dw `00000000
+    dw `00030000
+    dw `00030000
+    dw `00030000
+    dw `00030000
+    dw `00030000
+    dw `00030000
+    dw `00000000
+TilesEnd:
 
 Paddle01:
     dw `13331000

@@ -18,7 +18,7 @@ WaitVBlank:
     ; Copy tile
     ld de, Tiles
     ld hl, $9000
-    ld bc TilesEnd - Tiles
+    ld bc, TilesEnd - Tiles
     call MemCopy
 
     ; Copy Paddle01 tile
@@ -145,8 +145,32 @@ CleanOam:
     ld a, LCDC_ON | LCDC_OBJ_ON
     ld [rLCDC], a
 
-Done:
-    jp Done
+Main:
+    ; Wait until it's not VBlank
+    ld a, [rLY]
+    cp 144
+    jp nc, Main
+WaitVBlank2:
+    ld a, [rLY]
+    cp 144
+    jp c, WaitVBlank2
+
+    ; Move top right paddle one pixel to the up
+    ld a, [STARTOF(OAM)]
+    dec a
+    ld [STARTOF(OAM)], a
+
+    ; Move middle right paddle one pixel to the up
+    ld a, [STARTOF(OAM) + 4]
+    dec a
+    ld [STARTOF(OAM) + 4], a
+
+    ; Move bottom right paddle one pixel to the up
+    ld a, [STARTOF(OAM) + 8]
+    dec a
+    ld [STARTOF(OAM) + 8], a
+
+    jp Main
 
 Tiles:
     dw `00000000

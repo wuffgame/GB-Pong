@@ -145,6 +145,12 @@ CleanOam:
     ld a, LCDC_ON | LCDC_OBJ_ON
     ld [rLCDC], a
 
+    ; Initialize global variables
+    ld a, 0
+    ld [wFrameCounter], a
+    ld [wCurKeys], a
+    ld [wNewKeys], a
+
 Main:
     ; Wait until it's not VBlank
     ld a, [rLY]
@@ -155,9 +161,19 @@ WaitVBlank2:
     cp 144
     jp c, WaitVBlank2
 
+    ; Check current keys
+    call UpdateKeys
+
+CheckUp:
+    ld a, [wCurKeys]
+    and a, PAD_UP
+    jp z, CheckDown
+Up:
     ; Move top right paddle one pixel to the up
     ld a, [STARTOF(OAM)]
     dec a
+    cp a, 15
+    jp z, Main
     ld [STARTOF(OAM)], a
 
     ; Move middle right paddle one pixel to the up
@@ -169,8 +185,66 @@ WaitVBlank2:
     ld a, [STARTOF(OAM) + 8]
     dec a
     ld [STARTOF(OAM) + 8], a
-
     jp Main
+
+CheckDown:
+    ld a, [wCurKeys]
+    and a, PAD_DOWN
+    jp z, Main
+Down:
+    ; Move bottom right paddle one pixel to the down
+    ld a, [STARTOF(OAM) + 8]
+    inc a
+    cp a, 160 - 7
+    jp z, Main
+    ld [STARTOF(OAM) + 8], a
+
+    ; Move top right paddle one pixel to the down
+    ld a, [STARTOF(OAM)]
+    inc a
+    ld [STARTOF(OAM)], a
+
+    ; Move middle right paddle one pixel to the down
+    ld a, [STARTOF(OAM) + 4]
+    inc a
+    ld [STARTOF(OAM) + 4], a
+    jp Main
+
+UpdateKeys:
+  ; Poll half the controller
+  ld a, JOYP_GET_BUTTONS
+  call .onenibble
+  ld b, a ; B7-4 = 1; B3-0 = unpressed buttons
+
+  ; Poll the other half
+  ld a, JOYP_GET_CTRL_PAD
+  call .onenibble
+  swap a ; A7-4 = unpressed directions; A3-0 = 1
+  xor a, b ; A = pressed buttons + directions
+  ld b, a ; B = pressed buttons + directions
+
+  ; And release the controller
+  ld a, JOYP_GET_NONE
+  ldh [rJOYP], a
+
+  ; Combine with previous wCurKeys to make wNewKeys
+  ld a, [wCurKeys]
+  xor a, b ; A = keys that changed state
+  and a, b ; A = keys that changed to pressed
+  ld [wNewKeys], a
+  ld a, b
+  ld [wCurKeys], a
+  ret
+
+.onenibble
+  ldh [rJOYP], a ; switch the key matrix
+  call .knownret ; burn 10 cycles calling a known ret
+  ldh a, [rJOYP] ; ignore value while waiting for the key matrix to settle
+  ldh a, [rJOYP]
+  ldh a, [rJOYP] ; this read counts
+  or a, $F0 ; A7-4 = 1; A3-0 = unpressed keys
+.knownret
+  ret
 
 Tiles:
     dw `00000000
@@ -273,3 +347,11 @@ MemCopy:
     or a, c
     jp nz, MemCopy
     ret
+
+
+SECTION "Counter", WRAM0
+wFrameCounter: db
+
+SECTION "Input Variables", WRAM0
+wCurKeys: db
+wNewKeys: db

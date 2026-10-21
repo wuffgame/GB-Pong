@@ -175,7 +175,7 @@ Up:
     ld a, [STARTOF(OAM)]
     dec a
     cp a, 15
-    jp z, Main
+    jp z, Skip_paddle_move
     ld [STARTOF(OAM)], a
 
     ; Move middle right paddle one pixel to the up
@@ -187,18 +187,18 @@ Up:
     ld a, [STARTOF(OAM) + 8]
     dec a
     ld [STARTOF(OAM) + 8], a
-    jp Main
+    jp Ball_move
 
 CheckDown:
     ld a, [wCurKeys]
     and a, PAD_DOWN
-    jp z, Main
+    jp z, Ball_move
 Down:
     ; Move bottom right paddle one pixel to the down
     ld a, [STARTOF(OAM) + 8]
     inc a
     cp a, 160 - 7
-    jp z, Main
+    jp z, Skip_paddle_move
     ld [STARTOF(OAM) + 8], a
 
     ; Move top right paddle one pixel to the down
@@ -210,8 +210,10 @@ Down:
     ld a, [STARTOF(OAM) + 4]
     inc a
     ld [STARTOF(OAM) + 4], a
+Skip_paddle_move:
 
     ; Ball movement
+Ball_move:    
     ld a, [wBallDirection]
     cp 0
     jr z, .move_up_left
@@ -225,12 +227,53 @@ Down:
     jr z, .move_right
     cp 5
     jr z, .move_down_right
-    ret
+    jr .end_ball_move
 
-    
+    .move_up_left:
+        ld a, [STARTOF(OAM) + 24] ; y
+        dec a
+        ld [STARTOF(OAM) + 24], a
+        ld a, [STARTOF(OAM) + 25] ; x
+        dec a
+        ld [STARTOF(OAM) + 25], a
+        jr .end_ball_move
+    .move_left:
+        ld a, [STARTOF(OAM) + 25] ; x
+        dec a
+        ld [STARTOF(OAM) + 25], a
+        jr .end_ball_move
+    .move_down_left:
+        ld a, [STARTOF(OAM) + 24] ; y
+        inc a
+        ld [STARTOF(OAM) + 24], a
+        ld a, [STARTOF(OAM) + 25] ; x
+        dec a
+        ld [STARTOF(OAM) + 25], a
+        jr .end_ball_move
+    .move_up_right:
+        ld a, [STARTOF(OAM) + 24] ; y
+        dec a
+        ld [STARTOF(OAM) + 24], a
+        ld a, [STARTOF(OAM) + 25] ; x
+        inc a
+        ld [STARTOF(OAM) + 25], a
+        jr .end_ball_move
+    .move_right:
+        ld a, [STARTOF(OAM) + 25] ; x
+        inc a
+        ld [STARTOF(OAM) + 25], a
+        jr .end_ball_move
+    .move_down_right:
+        ld a, [STARTOF(OAM) + 24] ; y
+        inc a
+        ld [STARTOF(OAM) + 24], a
+        ld a, [STARTOF(OAM) + 25] ; x
+        inc a
+        ld [STARTOF(OAM) + 25], a
+        jr .end_ball_move
 
 
-
+    .end_ball_move:
     jp Main
 
 UpdateKeys:

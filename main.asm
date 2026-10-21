@@ -72,7 +72,7 @@ CleanOam:
     jp nz, CleanOam
 
 
-    ; Initalize paddle01 in OAM
+    ; Initalize paddle01 in OAM - 0
     ld hl, STARTOF(OAM)
     ld a, 72 + 16 - 8
     ld [hli], a
@@ -81,7 +81,7 @@ CleanOam:
     ld a, 0
     ld [hli], a
     ld [hli], a
-    ; Initalize paddle02 in OAM
+    ; Initalize paddle02 in OAM - 4
     ld a, 72 + 16
     ld [hli], a
     ld a, 155 + 8 - 4
@@ -90,7 +90,7 @@ CleanOam:
     ld [hli], a
     ld a, 0
     ld [hli], a
-    ; Initalize paddle03 in OAM
+    ; Initalize paddle03 in OAM - 8
     ld a, 72 + 16 + 8
     ld [hli], a
     ld a, 155 + 8 - 4
@@ -99,7 +99,7 @@ CleanOam:
     ld [hli], a
     ld a, 0
     ld [hli], a
-    ; Initalize paddle11 in OAM
+    ; Initalize paddle11 in OAM - 12
     ld a, 72 + 16 - 8
     ld [hli], a
     ld a, 0 + 8 + 4
@@ -108,7 +108,7 @@ CleanOam:
     ld [hli], a
     ld a, 0
     ld [hli], a
-    ; Initalize paddle12 in OAM
+    ; Initalize paddle12 in OAM - 16
     ld a, 72 + 16
     ld [hli], a
     ld a, 0 + 8 + 4
@@ -117,7 +117,7 @@ CleanOam:
     ld [hli], a
     ld a, 0
     ld [hli], a
-    ; Initalize paddle13 in OAM
+    ; Initalize paddle13 in OAM - 20
     ld a, 72 + 16 + 8
     ld [hli], a
     ld a, 0 + 8 + 4
@@ -126,7 +126,7 @@ CleanOam:
     ld [hli], a
     ld a, 0
     ld [hli], a
-    ; Initalize ball in OAM
+    ; Initalize ball in OAM - 24
     ld a, 72 + 16
     ld [hli], a
     ld a, 80 + 8 - 4
@@ -150,6 +150,8 @@ CleanOam:
     ld [wFrameCounter], a
     ld [wCurKeys], a
     ld [wNewKeys], a
+    ld a, 4
+    ld [wBallDirection], a
 
 Main:
     ; Wait until it's not VBlank
@@ -208,6 +210,27 @@ Down:
     ld a, [STARTOF(OAM) + 4]
     inc a
     ld [STARTOF(OAM) + 4], a
+
+    ; Ball movement
+    ld a, [wBallDirection]
+    cp 0
+    jr z, .move_up_left
+    cp 1
+    jr z, .move_left
+    cp 2
+    jr z, .move_down_left
+    cp 3
+    jr z, .move_up_right
+    cp 4
+    jr z, .move_right
+    cp 5
+    jr z, .move_down_right
+    ret
+
+    
+
+
+
     jp Main
 
 UpdateKeys:
@@ -351,6 +374,7 @@ MemCopy:
 
 SECTION "Counter", WRAM0
 wFrameCounter: db
+wBallDirection: db
 
 SECTION "Input Variables", WRAM0
 wCurKeys: db

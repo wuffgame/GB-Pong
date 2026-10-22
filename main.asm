@@ -271,8 +271,6 @@ Ball_move:
         inc a
         ld [STARTOF(OAM) + 25], a
         jr .end_ball_move
-
-
     .end_ball_move:
     jp Main
 
@@ -311,6 +309,14 @@ UpdateKeys:
   or a, $F0 ; A7-4 = 1; A3-0 = unpressed keys
 .knownret
   ret
+
+BallCollisionCheck:
+    ; Paddle first Y segment STARTOF(OAM)
+    ; Ball Y [STARTOF(OAM) + 24]
+    ; Ball X [STARTOF(OAM) + 25]
+    ; Check ball collision on right up paddle
+.nocollision:
+    ret
 
 Tiles:
     dw `00000000

@@ -213,7 +213,9 @@ Down:
 Skip_paddle_move:
 
     ; Ball movement
-Ball_move:    
+Ball_move:
+    call Check_Paddle_Collision
+
     ld a, [wBallDirection]
     cp 0
     jr z, .move_up_left
@@ -311,6 +313,62 @@ UpdateKeys:
   or a, $F0 ; A7-4 = 1; A3-0 = unpressed keys
 .knownret
   ret
+
+Check_Paddle_Collision:
+    ld a, [STARTOF(OAM) + 25] ; X ball
+    cp 159 ; X paddle
+    ret nz ; ret if not same X
+
+    ld a, [STARTOF(OAM) + 24] ; Y ball
+    ld b, a
+
+    ld a, [STARTOF(OAM)] ; Y up paddle
+    ld c, a
+    ld a, b
+    cp c
+    jr c, .no_collision
+
+    add 8
+    cp c
+
+    ld a, [STARTOF(OAM) + 24] ; Y ball
+    ld h, a
+
+    ld a, [STARTOF(OAM)] ; Y up paddle
+    ; if h < y paddle up -> check down
+    cp h
+    jr nc, .check_middle
+    add 8
+    cp h
+    jr c, .check_middle
+    ld a, 0
+    ld [wBallDirection], a
+    ret
+
+.check_middle:
+    ld a, [STARTOF(OAM) + 4] ; Y middle paddle
+    cp h
+    jr nc, .check_bottom
+    add 8
+    cp h
+    jr c, .check_bottom
+    ld a, 1
+    ld [wBallDirection], a
+    ret
+
+.check_bottom:
+    ld a, [STARTOF(OAM) + 8] ; Y down paddle
+    cp h
+    jr nc, .no_collision
+    add 8
+    cp h
+    jr c, .no_collision
+    ld a, 2
+    ld [wBallDirection], a
+    ret 
+
+.no_collision:
+    ret
 
 Tiles:
     dw `00000000

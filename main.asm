@@ -214,7 +214,7 @@ Skip_paddle_move:
 
     ; Ball movement
 Ball_move:
-    call Check_Paddle_Collision
+    call Check_Collision
 
     ld a, [wBallDirection]
     cp 0
@@ -314,7 +314,39 @@ UpdateKeys:
 .knownret
   ret
 
-Check_Paddle_Collision:
+Check_Collision:
+    ; Check ball collision with upper and lower wall
+    ; Check upper wall collision
+    ld a, [STARTOF(OAM) + 24]
+    cp 16
+    jr nz, .lower_wall
+    ld a, [wBallDirection]
+    cp 0 ; 5
+    jr nz, .up_two
+    ld a, 2
+    ld [wBallDirection], a
+    jr .right_paddle
+.up_two:
+    ld a, 5
+    ld [wBallDirection], a
+    jr .right_paddle
+    
+.lower_wall:
+    ld a, [STARTOF(OAM) + 24]
+    cp 159
+    jr nz, .right_paddle
+    cp 5
+    jr nz, .down_two
+    ld a, 3
+    ld [wBallDirection], a
+    jr .right_paddle
+.down_two:
+    ld a, 0
+    ld [wBallDirection], a
+
+    
+.right_paddle:   
+    ; Check paddle collistion
     ld a, [STARTOF(OAM) + 25] ; X ball
     cp 159 ; X paddle
     ret nz ; ret if not same X

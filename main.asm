@@ -148,6 +148,7 @@ CleanOam:
     ; Initialize global variables
     ld a, 0
     ld [wFrameCounter], a
+    ld [wPointsCounter], a
     ld [wCurKeys], a
     ld [wNewKeys], a
     ld a, 4
@@ -508,6 +509,7 @@ MemCopy:
 SECTION "Counter", WRAM0
 wFrameCounter: db
 wBallDirection: db
+wPointsCounter: db
 
 SECTION "Input Variables", WRAM0
 wCurKeys: db

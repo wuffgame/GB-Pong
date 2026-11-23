@@ -335,7 +335,7 @@ Check_Collision:
     
 .lower_wall:
     ld a, [STARTOF(OAM) + 24]
-    cp 159
+    cp 152
     jr nz, .right_paddle
     ld a, [wBallDirection]
     cp 5
@@ -353,80 +353,86 @@ Check_Collision:
     add a, 7
     cp 159
     jr c, .left_paddle
-    cp 166
+    cp 160
     jr nc, .left_paddle
 
     ld a, [STARTOF(OAM) + 24]
+    add a, 4
     ld h, a
 
     ld a, [STARTOF(OAM)]
-    sub a, 7
+    sub a, 4
     cp h
-    jr nc, .check_middle
-    add a, 15
+    jr nc, .left_paddle
+
+    add a, 11
     cp h
-    jr c, .check_middle
+    jr nc, .hit_top
+
+    add a, 8
+    cp h
+    jr nc, .hit_middle
+
+    add a, 12
+    cp h
+    jr nc, .hit_bottom
+    jr .left_paddle
+
+.hit_top:    
     ld a, 0
     ld [wBallDirection], a
     ret
-.check_middle:
-    ld a, [STARTOF(OAM) + 4]
-    cp h
-    jr nc, .check_bottom
-    add a, 8
-    cp h
-    jr c, .check_bottom
+
+.hit_middle:
     ld a, 1
     ld [wBallDirection], a
     ret
-.check_bottom:
-    ld a, [STARTOF(OAM) + 8]
-    cp h
-    jr nc, .left_paddle
-    add a, 15
-    cp h
-    jr c, .left_paddle
+.hit_bottom:
     ld a, 2
     ld [wBallDirection], a
     ret
 
 .left_paddle:
     ld a, [STARTOF(OAM) + 25]
-    cp 20
+    cp 21
     jr nc, .right_wall
-    cp 10
+    cp 11
     jr c, .right_wall
 
+    ld a, 20
+    ld [STARTOF(OAM) + 25], a
+
     ld a, [STARTOF(OAM) + 24]
+    add a, 4
     ld h, a
 
     ld a, [STARTOF(OAM) + 12]
-    sub a, 7
+    sub a, 4
     cp h
-    jr nc, .left_check_middle
-    add a, 15
+    jr nc, .right_wall
+
+    add a, 11
     cp h
-    jr c, .left_check_middle
+    jr nc, .left_hit_top
+
+    add a, 8
+    cp h
+    jr nc, .left_hit_middle
+
+    add a, 12
+    cp h
+    jr nc, .left_hit_bottom
+    jr .right_wall
+
+.left_hit_top:
     ld a, 3
     ld [wBallDirection], a
     ret
-.left_check_middle:
-    ld a, [STARTOF(OAM) + 16]
-    cp h
-    jr nc, .left_check_bottom
-    add a, 8
-    cp h
-    jr c, .left_check_bottom
+.left_hit_middle:
     ld a, 4
     ld [wBallDirection], a
     ret
-.left_check_bottom:
-    ld a, [STARTOF(OAM) + 20]
-    cp h
-    jr nc, .right_wall
-    add a, 15
-    cp h
-    jr c, .right_wall
+.left_hit_bottom:
     ld a, 5
     ld [wBallDirection], a
     ret

@@ -337,6 +337,7 @@ Check_Collision:
     ld a, [STARTOF(OAM) + 24]
     cp 159
     jr nz, .right_paddle
+    ld a, [wBallDirection]
     cp 5
     jr nz, .down_two
     ld a, 3
@@ -348,59 +349,46 @@ Check_Collision:
 
     
 .right_paddle:   
-    ; Check paddle collistion
-    ld a, [STARTOF(OAM) + 25] ; X ball
-    cp 159 ; X paddle
-    ret nz ; ret if not same X
-
-    ld a, [STARTOF(OAM) + 24] ; Y ball
-    ld b, a
-
-    ld a, [STARTOF(OAM)] ; Y up paddle
-    ld c, a
-    ld a, b
-    cp c
+    ld a, [STARTOF(OAM) + 25]
+    add a, 7
+    cp 159
     jr c, .no_collision
+    cp 166
+    jr nc, .no_collision
 
-    add 8
-    cp c
-
-    ld a, [STARTOF(OAM) + 24] ; Y ball
+    ld a, [STARTOF(OAM) + 24]
     ld h, a
 
-    ld a, [STARTOF(OAM)] ; Y up paddle
-    ; if h < y paddle up -> check down
+    ld a, [STARTOF(OAM)]
+    sub a, 7
     cp h
     jr nc, .check_middle
-    add 8
+    add a, 15
     cp h
     jr c, .check_middle
     ld a, 0
     ld [wBallDirection], a
     ret
-
 .check_middle:
-    ld a, [STARTOF(OAM) + 4] ; Y middle paddle
+    ld a, [STARTOF(OAM) + 4]
     cp h
     jr nc, .check_bottom
-    add 8
+    add a, 8
     cp h
     jr c, .check_bottom
     ld a, 1
     ld [wBallDirection], a
     ret
-
 .check_bottom:
-    ld a, [STARTOF(OAM) + 8] ; Y down paddle
+    ld a, [STARTOF(OAM) + 8]
     cp h
     jr nc, .no_collision
-    add 8
+    add a, 15
     cp h
     jr c, .no_collision
     ld a, 2
     ld [wBallDirection], a
     ret 
-
 .no_collision:
     ret
 

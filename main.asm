@@ -352,9 +352,9 @@ Check_Collision:
     ld a, [STARTOF(OAM) + 25]
     add a, 7
     cp 159
-    jr c, .no_collision
+    jr c, .right_wall
     cp 166
-    jr nc, .no_collision
+    jr nc, .right_wall
 
     ld a, [STARTOF(OAM) + 24]
     ld h, a
@@ -382,13 +382,38 @@ Check_Collision:
 .check_bottom:
     ld a, [STARTOF(OAM) + 8]
     cp h
-    jr nc, .no_collision
+    jr nc, .right_wall
     add a, 15
     cp h
-    jr c, .no_collision
+    jr c, .right_wall
     ld a, 2
     ld [wBallDirection], a
-    ret 
+    ret
+
+.right_wall:
+    ld a, [STARTOF(OAM) + 25]
+    cp 166
+    jr c, .left_wall
+    ld a, [wPointsCounterBot]
+    inc a
+    ld [wPointsCounterBot], a
+    jr .reset_ball
+.left_wall:
+    ld a, [STARTOF(OAM) + 25]
+    cp 8
+    jr nc, .no_collision
+    ld a, [wPointsCounterPlayer]
+    inc a
+    ld [wPointsCounterPlayer], a
+.reset_ball:
+    ld a, 72 + 16
+    ld [STARTOF(OAM) + 24], a
+    ld a, 80 + 8 - 4
+    ld [STARTOF(OAM) + 25], a
+    ld a, 4
+    ld [wBallDirection], a
+    ret
+
 .no_collision:
     ret
 
